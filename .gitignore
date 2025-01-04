@@ -1,1 +1,5 @@
 .env
+/selfies/*
+/selfies/
+/selfies
+prompt.txt
