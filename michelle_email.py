@@ -64,11 +64,14 @@ def get_poem():
     
 
 
-def send_letter():
-    # body = create_prompt()  # Generates an ai love poem
-    # body = 'test'
-
-    title, body = get_poem()
+def send_letter(using_ai = False):
+    title = ""
+    body = ""
+    if using_ai:
+        title = SUBJECT
+        body = create_prompt()  # Generates an ai love poem
+    else:
+        title, body = get_poem()
 
     # HTML content with the embedded image (base64 encoded in HTML)
     html = f'''\
