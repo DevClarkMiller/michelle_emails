@@ -1,4 +1,5 @@
-import smtplib, os, random
+import smtplib, os, random, requests
+from bs4 import BeautifulSoup
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
@@ -39,19 +40,42 @@ def get_picture():
         img = f.read()
 
     return img
+
+def get_poem():
+    x = requests.get('https://poems.one/poem-of-the-day/pod')
+    soup = BeautifulSoup(x.content, 'html.parser')
+    container = soup.find_all("div", class_="poem__item")
+    content = ""
+    for element in container:
+        content_tag = element.find("p")
+        if content_tag:
+            content = element.get_text()
+
+
+    poem = ""
+    lines = content.strip().split('\n')
+    for i in range(1, len(lines)):
+        line = lines[i].strip()
+        if not line.isspace():
+            poem += f"{line}\n"
+
+    title = lines[0].strip()
+    return title, poem
     
 
 
 def send_letter():
-    body = create_prompt()  # Generates an ai love poem
+    # body = create_prompt()  # Generates an ai love poem
     # body = 'test'
+
+    title, body = get_poem()
 
     # HTML content with the embedded image (base64 encoded in HTML)
     html = f'''\
     <html>
     <head></head>
     <body>
-        <h1>{SUBJECT}</h1>
+        <h1>{title}</h1>
         <p>{body}</p>
         <img w="300px" height="650px" src="cid:image1">
     </body>
